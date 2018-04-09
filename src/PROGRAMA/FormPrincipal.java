@@ -5,6 +5,7 @@
  */
 package PROGRAMA;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -26,6 +28,15 @@ public class FormPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form FormPrincipal
      */
+    
+    public static final String C89 = "-std=c89";
+    public static final String C99 = "-std=c99";
+    public static final String C11 = "-std=c11";
+    public static final String CPP98 = "-std=c++98";
+    public static final String CPP11 = "-std=c++11";
+    public static final String CPP14 = "-std=c++14";
+    public static final String CPP17 = "-std=c++17";
+    
     public FormPrincipal() {
         initComponents();
     }
@@ -51,6 +62,10 @@ public class FormPrincipal extends javax.swing.JFrame {
         lblLinguagem = new javax.swing.JLabel();
         lblNome = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
+        lblVersao = new javax.swing.JLabel();
+        cbVersao = new javax.swing.JComboBox<>();
+        lblSistema = new javax.swing.JLabel();
+        cbSistema = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,7 +114,23 @@ public class FormPrincipal extends javax.swing.JFrame {
             }
         });
 
-        cbLinguagem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "c", "c++" }));
+        cbLinguagem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "C", "C++" }));
+        if(cbLinguagem.getSelectedItem().toString().equals("C")){
+            cbVersao.addItem("C89");
+            cbVersao.addItem("C99");
+            cbVersao.addItem("C11");
+        }         
+        else{             
+            cbVersao.addItem("C++98");  
+            cbVersao.addItem("C++11");           
+            cbVersao.addItem("C++14");              
+            cbVersao.addItem("C++17");      
+        }
+        cbLinguagem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbLinguagemActionPerformed(evt);
+            }
+        });
 
         lblLinguagem.setText("Linguagem:");
 
@@ -110,6 +141,12 @@ public class FormPrincipal extends javax.swing.JFrame {
                 txtNomeActionPerformed(evt);
             }
         });
+
+        lblVersao.setText("Versão:");
+
+        lblSistema.setText("Sistema");
+
+        cbSistema.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Windows", "Linux" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -124,13 +161,21 @@ public class FormPrincipal extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(cbLinguagem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(lblVersao)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbVersao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblSistema)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbSistema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblSelecionar)
                         .addGap(18, 18, 18)
                         .addComponent(btnSelecionar)
                         .addGap(18, 18, 18)
                         .addComponent(lblNome)
                         .addGap(18, 18, 18)
-                        .addComponent(txtNome, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)))
+                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(btnGerar)
@@ -146,7 +191,11 @@ public class FormPrincipal extends javax.swing.JFrame {
                     .addComponent(lblLinguagem)
                     .addComponent(lblNome)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbLinguagem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbLinguagem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblVersao)
+                    .addComponent(cbVersao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblSistema)
+                    .addComponent(cbSistema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
@@ -178,7 +227,7 @@ public class FormPrincipal extends javax.swing.JFrame {
         DefaultListModel dlm = new DefaultListModel();
         
         //SE A LINGUAGEM A SER USADA FOR "C"
-        if("c".equals(cbLinguagem.getSelectedItem().toString())){      
+        if("C".equals(cbLinguagem.getSelectedItem().toString())){      
             jFile.setFileFilter(new FileNameExtensionFilter("Arquivos c", "c"));
             jFile.setAcceptAllFileFilterUsed(false);
         }
@@ -212,7 +261,7 @@ public class FormPrincipal extends javax.swing.JFrame {
 
         //SE O NUMERO DE ARQUIVOS NA LISTA FOR MAIOR QUE ZERO
         if(lstArquivos.getModel().getSize() > 0){
-            
+                     
             //SE O ARQUIVO PRINCIPAL NÃO ESTIVER SELECIONADO
             if(lstArquivos.isSelectionEmpty()){
                 JOptionPane.showMessageDialog(this, "Selecione o arquivo principal", "Aviso", JOptionPane.OK_OPTION);
@@ -230,7 +279,56 @@ public class FormPrincipal extends javax.swing.JFrame {
                     //SE O USUÁRIO CONFIRMAR O DIRETORIO DE SALVAMENTO DO MAKEFILE
                     if (jFile.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                         try {
-                            criarMakefile(jFile.getSelectedFile());
+                            
+                            if(cbLinguagem.getSelectedItem().toString().equals("C")){
+                                if(cbSistema.getSelectedItem().toString().equals("Windows")){  
+                                    if(cbVersao.getSelectedItem().toString().equals("C89"))
+                                        geraMakefileWindowsC(jFile.getSelectedFile());
+                                    else if(cbVersao.getSelectedItem().toString().equals("C99"))
+                                        geraMakefileWindowsC(jFile.getSelectedFile());
+                                    else {
+                                        geraMakefileWindowsC(jFile.getSelectedFile());
+                                    }
+                                }
+                                else{
+                                    if(cbVersao.getSelectedItem().toString().equals("C89"))
+                                        geraMakefileLinuxC(jFile.getSelectedFile());
+                                    else if(cbVersao.getSelectedItem().toString().equals("C99"))
+                                        geraMakefileLinuxC(jFile.getSelectedFile());
+                                    else {
+                                        geraMakefileLinuxC(jFile.getSelectedFile());
+                                    }
+                                }
+                            }
+                            else{
+                                if(cbSistema.getSelectedItem().toString().equals("Windows")){           
+                                    if(cbVersao.getSelectedItem().toString().equals("C++98")) 
+                                        geraMakefileWindowsCPP(jFile.getSelectedFile());
+                                    else if(cbVersao.getSelectedItem().toString().equals("C++11"))
+                                        geraMakefileWindowsCPP(jFile.getSelectedFile());
+                                    else if(cbVersao.getSelectedItem().toString().equals("C++14")){
+                                        geraMakefileWindowsCPP(jFile.getSelectedFile());
+                                    }
+                                    else{
+                                        geraMakefileWindowsCPP(jFile.getSelectedFile());
+                                    }                              
+                                }
+                                else{
+                                    if(cbVersao.getSelectedItem().toString().equals("C++98"))
+                                        geraMakefileLinuxCPP(jFile.getSelectedFile());
+                                    else if(cbVersao.getSelectedItem().toString().equals("C++11"))
+                                        geraMakefileLinuxCPP(jFile.getSelectedFile());
+                                    else if(cbVersao.getSelectedItem().toString().equals("C++14")){
+                                        geraMakefileLinuxCPP(jFile.getSelectedFile());
+                                    }
+                                    else{
+                                        geraMakefileLinuxCPP(jFile.getSelectedFile());
+                                    }                                  
+                                }
+                            }
+                            
+                            JOptionPane.showMessageDialog(this, "Makefile gerado", "", JOptionPane.INFORMATION_MESSAGE);
+                            
                         } catch (IOException ex) {
                             Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -251,14 +349,44 @@ public class FormPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnGerarActionPerformed
 
+    private String [] lstArquivosItens(){
+        ListModel<String> lm = lstArquivos.getModel();
+        String arquivos [] = new String[lstArquivos.getModel().getSize()];
+                
+        for(int i = 0; i < lm.getSize(); i++){            
+            arquivos[i] = lm.getElementAt(i);
+        }
+
+        return arquivos;
+        
+    }
+    
     private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNomeActionPerformed
 
-    void criarMakefile(File caminho) throws IOException{
+    private void cbLinguagemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbLinguagemActionPerformed
+        cbVersao.removeAllItems();
+        
+        if(cbLinguagem.getSelectedItem().toString().equals("C")){
+            cbVersao.addItem("C89");
+            cbVersao.addItem("C99");
+            cbVersao.addItem("C11");
+        }         
+        else{                         
+            cbVersao.addItem("C++98");  
+            cbVersao.addItem("C++11");           
+            cbVersao.addItem("C++14");              
+            cbVersao.addItem("C++17");      
+        }
+    }//GEN-LAST:event_cbLinguagemActionPerformed
+
+    public void geraMakefileLinuxC(File endereco) throws IOException{
+        
+        
         
         //ABERTURA DE ARQUIVO PARA ESCRITA
-        FileWriter escrita = new FileWriter(caminho);
+        FileWriter escrita = new FileWriter(endereco);
         
         //STRING PARA "JOGAR" NO ARQUIVO
         String makefile;
@@ -273,35 +401,189 @@ public class FormPrincipal extends javax.swing.JFrame {
             if(i != lstArquivos.getSelectedIndex()){   
                 
                 //PEGA NOME DO ARQUIVO
-                String aux = lstArquivos.getModel().getElementAt(i);
+                String aux = lstArquivos.getModel().getElementAt(i);                
                 
-                //SE O ARQUIVO FOR .C
-                if("c".equals(cbLinguagem.getSelectedItem().toString())){
-                    aux = aux.replaceAll("\\.c", "\\.o");
-                }
-                
-                //SE O ARQUIVO FOR .CPP
-                else{
-                    aux = aux.replaceAll("\\.cpp", "\\.o");
-                }
+                aux = aux.replaceAll("\\.c", "\\.o");                
+              
                 makefile += aux + " ";
             }        
         }
         
         // STRING CONTENDO O NOME DO ARQUIVO PRINCIPAL
         String principal = lstArquivos.getModel().getElementAt(lstArquivos.getSelectedIndex());
+             
+        makefile += principal + "\n\t";
         
+        makefile += "gcc -lm ";
+        
+        if(cbVersao.getSelectedItem().equals("C89")){
+            makefile += C89 + " -o " + txtNome.getText() + " ";
+        }
+        else if(cbVersao.getSelectedItem().equals("C99")){
+            makefile += C99 + " -o " + txtNome.getText() + " ";
+        }
+        else{
+            makefile += C11 + " -o " + txtNome.getText() + " ";
+        }
+                
+        makefile += principal += " ";
+        
+        
+        for(int i = 0; i < lstArquivos.getModel().getSize(); i++){ 
+            
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if(i != lstArquivos.getSelectedIndex()){
+                String aux = lstArquivos.getModel().getElementAt(i);
+                
+                aux = aux.replaceAll("\\.c", "\\.o");
+                                                
+                makefile += aux + " ";
+            }            
+        }
+        
+        makefile += "\n";
+        
+        for (int i = 0; i < lstArquivos.getModel().getSize(); i++) {
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if (i != lstArquivos.getSelectedIndex()) {
+                //PEGA NOME DO ARQUIVO
+                String nomeArquivo = lstArquivos.getModel().getElementAt(i);
+                String aux = nomeArquivo;
+                aux = aux.replaceAll("\\.c", "\\.o");
+                makefile += aux + ": " + nomeArquivo + "\n\t";
+                makefile += "gcc -o " + aux + " -c " + nomeArquivo + "\n";
+            }
+        }
+        
+        makefile += "clean:\n\trm *.o " + txtNome.getText() + "\n";
+        makefile += "run:\n\t./" + txtNome.getText();
+        
+        escrita.write(makefile);
+        escrita.close();        
+    }
+    public void geraMakefileWindowsC(File endereco) throws IOException{
+        
+        //ABERTURA DE ARQUIVO PARA ESCRITA
+        FileWriter escrita = new FileWriter(endereco);
+        
+        //STRING PARA "JOGAR" NO ARQUIVO
+        String makefile;
+        
+        //DIRETIVA "all"
+        makefile = "all: ";
+        
+        //LOOP PARA O NOME DOS ARQUIVOS
+        for(int i = 0; i < lstArquivos.getModel().getSize(); i++){ 
+            
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if(i != lstArquivos.getSelectedIndex()){   
+                
+                //PEGA NOME DO ARQUIVO
+                String aux = lstArquivos.getModel().getElementAt(i);                
+                
+                aux = aux.replaceAll("\\.c", "\\.o");                
+              
+                makefile += aux + " ";
+            }        
+        }
+             
+        // STRING CONTENDO O NOME DO ARQUIVO PRINCIPAL
+        String principal = lstArquivos.getModel().getElementAt(lstArquivos.getSelectedIndex());
         
         makefile += principal + "\n\t";
         
-        //SE O ARQUIVO DOR .C
-        if("c".equals(cbLinguagem.getSelectedItem().toString())){
-            makefile += "gcc -lm -o " + txtNome.getText() + " ";
+        makefile += "gcc -lm ";
+        
+        if(cbVersao.getSelectedItem().equals("C89")){
+            makefile += C89 + " -o " + txtNome.getText() + " ";
+        }
+        else if(cbVersao.getSelectedItem().equals("C99")){
+            makefile += C99 + " -o " + txtNome.getText() + " ";
+        }
+        else{
+            makefile += C11 + " -o " + txtNome.getText() + " ";
         }
         
-        //SE O ARQUIVO FOR .CPP
+        makefile += principal + " ";
+        
+        
+        for(int i = 0; i < lstArquivos.getModel().getSize(); i++){ 
+            
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if(i != lstArquivos.getSelectedIndex()){
+                String aux = lstArquivos.getModel().getElementAt(i);
+                
+                aux = aux.replaceAll("\\.c", "\\.o");
+                                                
+                makefile += aux + " ";
+            }            
+        }
+        
+        makefile += "\n";
+        
+        for (int i = 0; i < lstArquivos.getModel().getSize(); i++) {
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if (i != lstArquivos.getSelectedIndex()) {
+                //PEGA NOME DO ARQUIVO
+                String nomeArquivo = lstArquivos.getModel().getElementAt(i);
+                String aux = nomeArquivo;
+                aux = aux.replaceAll("\\.c", "\\.o");
+                makefile += aux + ": " + nomeArquivo + "\n\t";
+                makefile += "gcc -o " + aux + " -c " + nomeArquivo + "\n";
+            }
+        }
+        
+        makefile += "clean:\n\tdel *.o " + txtNome.getText() + "\n";
+        makefile += "run:\n\t" + txtNome.getText();
+        
+        escrita.write(makefile);
+        escrita.close();     
+    }
+    public void geraMakefileLinuxCPP(File endereco) throws IOException{
+        
+        
+        //ABERTURA DE ARQUIVO PARA ESCRITA
+        FileWriter escrita = new FileWriter(endereco);
+        
+        //STRING PARA "JOGAR" NO ARQUIVO
+        String makefile;
+        
+        //DIRETIVA "all"
+        makefile = "all: ";
+        
+        //LOOP PARA O NOME DOS ARQUIVOS
+        for(int i = 0; i < lstArquivos.getModel().getSize(); i++){ 
+            
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if(i != lstArquivos.getSelectedIndex()){   
+                
+                //PEGA NOME DO ARQUIVO
+                String aux = lstArquivos.getModel().getElementAt(i);                
+                
+                aux = aux.replaceAll("\\.cpp", "\\.o");                
+              
+                makefile += aux + " ";
+            }        
+        }
+        
+        // STRING CONTENDO O NOME DO ARQUIVO PRINCIPAL
+        String principal = lstArquivos.getModel().getElementAt(lstArquivos.getSelectedIndex());
+             
+        makefile += principal + "\n\t";
+        
+        makefile += "g++ -lm ";
+        
+        if(cbVersao.getSelectedItem().equals("C++98")){
+            makefile += CPP98 + " -o " + txtNome.getText() + " ";
+        }
+        else if(cbVersao.getSelectedItem().equals("C++11")){
+            makefile += CPP11 + " -o " + txtNome.getText() + " ";
+        }
+        else if(cbVersao.getSelectedItem().equals("C++14")){
+            makefile += CPP14 + " -o " + txtNome.getText() + " ";
+        }
         else{
-            makefile += "g++ -lm -o " + txtNome.getText() + " ";
+            makefile += CPP17 + " -o " + txtNome.getText() + " ";
         }
         
         makefile += principal += " ";
@@ -313,66 +595,115 @@ public class FormPrincipal extends javax.swing.JFrame {
             if(i != lstArquivos.getSelectedIndex()){
                 String aux = lstArquivos.getModel().getElementAt(i);
                 
-                //SE O ARQUIVO FOR .C
-                if("c".equals(cbLinguagem.getSelectedItem().toString())){
-                    aux = aux.replaceAll("\\.c", "\\.o");
-                }
-                
-                //SE O ARQUIVO FOR .CPP
-                else{
-                    aux = aux.replaceAll("\\.cpp", "\\.o");
-                }
-                                
+                aux = aux.replaceAll("\\.cpp", "\\.o");
+                                                
                 makefile += aux + " ";
             }            
         }
         
         makefile += "\n";
         
+        for (int i = 0; i < lstArquivos.getModel().getSize(); i++) {
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if (i != lstArquivos.getSelectedIndex()) {
+                //PEGA NOME DO ARQUIVO
+                String nomeArquivo = lstArquivos.getModel().getElementAt(i);
+                String aux = nomeArquivo;
+                aux = aux.replaceAll("\\.cpp", "\\.o");
+                makefile += aux + ": " + nomeArquivo + "\n\t";
+                makefile += "g++ -o " + aux + " -c " + nomeArquivo + "\n";
+            }
+        }
+               
+        makefile += "clean:\n\trm *.o " + txtNome.getText() + "\n";
+        makefile += "run:\n\t./" + txtNome.getText();
+        
+        escrita.write(makefile);
+        escrita.close();        
+    }
+    public void geraMakefileWindowsCPP(File endereco) throws IOException{
+        
+        //ABERTURA DE ARQUIVO PARA ESCRITA
+        FileWriter escrita = new FileWriter(endereco);
+        
+        //STRING PARA "JOGAR" NO ARQUIVO
+        String makefile;
+        
+        //DIRETIVA "all"
+        makefile = "all: ";
+        
+        //LOOP PARA O NOME DOS ARQUIVOS
+        for(int i = 0; i < lstArquivos.getModel().getSize(); i++){ 
+            
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if(i != lstArquivos.getSelectedIndex()){   
+                
+                //PEGA NOME DO ARQUIVO
+                String aux = lstArquivos.getModel().getElementAt(i);                
+                
+                aux = aux.replaceAll("\\.cpp", "\\.o");                
+              
+                makefile += aux + " ";
+            }        
+        }
+        
+        // STRING CONTENDO O NOME DO ARQUIVO PRINCIPAL
+        String principal = lstArquivos.getModel().getElementAt(lstArquivos.getSelectedIndex());
+             
+        makefile += principal + "\n\t";
+        
+        makefile += "g++ -lm ";
+        
+        if(cbVersao.getSelectedItem().equals("C++98")){
+            makefile += CPP98 + " -o " + txtNome.getText() + " ";
+        }
+        else if(cbVersao.getSelectedItem().equals("C++11")){
+            makefile += CPP11 + " -o " + txtNome.getText() + " ";
+        }
+        else if(cbVersao.getSelectedItem().equals("C++14")){
+            makefile += CPP14 + " -o " + txtNome.getText() + " ";
+        }
+        else{
+            makefile += CPP17 + " -o " + txtNome.getText() + " ";
+        }
+        
+        makefile += principal += " ";
+        
+        
         for(int i = 0; i < lstArquivos.getModel().getSize(); i++){ 
             
             //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
             if(i != lstArquivos.getSelectedIndex()){
+                String aux = lstArquivos.getModel().getElementAt(i);
                 
+                aux = aux.replaceAll("\\.cpp", "\\.o");
+                                                
+                makefile += aux + " ";
+            }            
+        }
+        
+        makefile += "\n";
+        
+        for (int i = 0; i < lstArquivos.getModel().getSize(); i++) {
+            //SE "i" FOR DIFERENTE DO ARQUIVO PRINCIPAL
+            if (i != lstArquivos.getSelectedIndex()) {
                 //PEGA NOME DO ARQUIVO
                 String nomeArquivo = lstArquivos.getModel().getElementAt(i);
                 String aux = nomeArquivo;
-               
-                //SE O ARQUIVO FOR .C
-                if("c".equals(cbLinguagem.getSelectedItem().toString())){
-                    aux = aux.replaceAll("\\.c", "\\.o");
-                }
-                
-                //SE O ARQUIVO FOR .CPP
-                else{
-                    aux = aux.replaceAll("\\.cpp", "\\.o");
-                }
-                
+                aux = aux.replaceAll("\\.cpp", "\\.o");
                 makefile += aux + ": " + nomeArquivo + "\n\t";
-                
-                //SE O ARQUIVO FOR .C 
-                if("c".equals(cbLinguagem.getSelectedItem().toString())){
-                    makefile += "gcc -o " + aux + " -c " + nomeArquivo + "\n";
-                }
-                
-                //SE O ARQUIVO FOR .CPP
-                else{
-                    makefile += "g++ -o " + aux + " -c " + nomeArquivo + "\n";
-                }
+                makefile += "g++ -o " + aux + " -c " + nomeArquivo + "\n";
             }
         }
         
-        makefile += "clean:\n\tdel *.o main\n";
-        makefile += "run:\n\tprograma";
+        makefile += "clean:\n\tdel *.o " + txtNome.getText() + "\n";
+        makefile += "run:\n\t" + txtNome.getText();
         
         escrita.write(makefile);
-        escrita.close();        
-        
-        JOptionPane.showMessageDialog(this, "Makefile gerado", "", JOptionPane.INFORMATION_MESSAGE);
-                
+        escrita.close();     
     }
-    
-    
+
+        
     /**
      * @param args the command line arguments
      */
@@ -411,7 +742,7 @@ public class FormPrincipal extends javax.swing.JFrame {
                 form.setLocationRelativeTo(null);
 
                 //TORNA O FORM VISIVEL
-                form.setVisible(true);              
+                form.setVisible(true);    
             }
         });
     }
@@ -420,6 +751,8 @@ public class FormPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnGerar;
     private javax.swing.JButton btnSelecionar;
     private javax.swing.JComboBox<String> cbLinguagem;
+    private javax.swing.JComboBox<String> cbSistema;
+    private javax.swing.JComboBox<String> cbVersao;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -427,6 +760,8 @@ public class FormPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel lblLinguagem;
     private javax.swing.JLabel lblNome;
     private javax.swing.JLabel lblSelecionar;
+    private javax.swing.JLabel lblSistema;
+    private javax.swing.JLabel lblVersao;
     private javax.swing.JList<String> lstArquivos;
     private javax.swing.JTextField txtNome;
     // End of variables declaration//GEN-END:variables
